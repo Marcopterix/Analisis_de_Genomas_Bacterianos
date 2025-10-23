@@ -1,10 +1,6 @@
 #!/bin/bash
 
 # Para descargar las bases de datos de pubMLST: mlst-download_pub_mlst -d . | bash
-# Check it downloaded everything ok: find pubmlst | less
-# Save the old database folder: mv ../db/pubmlst ../db/pubmlst.old
-# Put the new folder there: mv ./pubmlst ../db/
-# Regenerate the BLAST database: ./mlst-make_blast_db
 # Check schemes are installed: ../bin/mlst --list
 
 echo -e "#######################################################################" "\n"
@@ -12,21 +8,27 @@ echo -e  ===== Determinación del MLST de los ensambles obtenidos con MLST =====
 echo -e "\t"                     ===== Inicio: $(date) ===== "\n"
 echo -e "#######################################################################" "\n"
 
-cd /home/admcenasa/Analisis_corridas/SPAdes/bacteria
+#-------------------------------------------------------------------
+# Definir rutas de directorios de entrada y salida
+dirfa="/home/admcenasa/Analisis_corridas/SPAdes/bacteria"
+dirout="/home/admcenasa/Analisis_corridas/MLST"
+#--------------------------------------------------------------------
+
+cd ${dirfa}
 
 for assembly in *.fa; do
     ID=$(basename ${assembly} | cut -d '-' -f '1')
     name=$(basename ${assembly} | cut -d '-' -f '2')
 
-mlst ${assembly} > /home/admcenasa/Analisis_corridas/MLST/${ID}_mlst_results.tsv
+mlst ${assembly} > ${dirout}/${ID}_mlst_results.tsv
 
-done
+	done
 
 # --------------------------------
 # Conjuntar los archivos de salida
 # --------------------------------
 
-cd /home/admcenasa/Analisis_corridas/MLST
+cd ${dirout}
 
 echo -e "Muestra\tDatabase\tST\tAlelos" > ./MLST_assembly_results_all.tsv
 

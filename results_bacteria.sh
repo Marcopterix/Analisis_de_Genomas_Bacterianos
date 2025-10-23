@@ -1,51 +1,78 @@
 #!/bin/bash
 
-echo -e "################################################################################################################" "\n"
+echo -e "#########################################################################" "\n"
+echo -e ===== Moviendo archivos de resultados obtenidos a una sola carpeta ===== "\n"
+echo -e "\t" ===== Inicio: $(date) ===== "\n"
+echo -e "#########################################################################" "\n"
 
-echo -e Moviendo todos los archivos de resultados obtenidos a: /home/admcenasa/Analisis_corridas/Resultados_all_bacteria "\n"
+#-------------------------------------------------------------------
+# Definir rutas de directorios de entrada y salida
+dirout="/home/admcenasa/Analisis_corridas/Resultados_all_bacteria"
+dirfq="/home/admcenasa/Analisis_corridas/fastQC/bacteria"
+dirfqpt="/home/admcenasa/Analisis_corridas/fastQC_ptrim/bacteria"
+dirmqc="/home/admcenasa/Analisis_corridas/fastQC/bacteria/multiqc"
+dirmqcpt="/home/admcenasa/Analisis_corridas/fastQC_ptrim/bacteria/multiqc"
+#dirk2=""
+dirbk="/home/admcenasa/Analisis_corridas/Bracken/bacteria"
+dirkf="/home/admcenasa/Analisis_corridas/kmerfinder/bacteria"
+dirsMLST="/home/admcenasa/Analisis_corridas/stringMLST"
+dirMLST="/home/admcenasa/Analisis_corridas/MLST"
+dirRAM="/home/admcenasa/Analisis_corridas/AMRFinder"
+direns="/home/admcenasa/Analisis_corridas/SPAdes/bacteria"
+dirlc="/home/admcenasa/Analisis_corridas/Corrida_bacterias"
+dirpt="/home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria"
+#--------------------------------------------------------------------
 
-echo -e "################################################################################################################" "\n"
+mkdir -p ${dirout}
+cd ${dirout}
 
-cd /home/admcenasa/Analisis_corridas/Resultados_all_bacteria
-
+#-----------------------------------
 mkdir -p FastQC
 mkdir -p FastQC/Lecturas
 mkdir -p FastQC/Lecturas_pt
 mkdir -p FastQC/Lecturas/multiQC
 mkdir -p FastQC/Lecturas_pt/multiQC
-#Mover los archivos generados por FastQC a la carpeta FastQC
-mv /home/admcenasa/Analisis_corridas/fastQC/bacteria/*fastqc* ./FastQC/Lecturas
-mv /home/admcenasa/Analisis_corridas/fastQC_ptrim/bacteria/*fastqc* ./FastQC/Lecturas_pt
-rm -R /home/admcenasa/Analisis_corridas/fastQC/bacteria/multiqc/multiqc_data
-mv /home/admcenasa/Analisis_corridas/fastQC/bacteria/multiqc/*multiqc* ./FastQC/Lecturas/multiQC
-mv /home/admcenasa/Analisis_corridas/fastQC_ptrim/bacteria/multiqc/postrimm_multiqc* ./FastQC/Lecturas_pt/multiQC
-rm -R /home/admcenasa/Analisis_corridas/fastQC_ptrim/bacteria/multiqc/multiqc_data
+#-----------------------------------
+mv ${dirfq}/*fastqc* ./FastQC/Lecturas
+mv ${dirfqpt}/*fastqc* ./FastQC/Lecturas_pt
+rm -R ${dirmqc}/multiqc_data
+mv ${dirmqc}/*multiqc* ./FastQC/Lecturas/multiQC
+mv ${dirmqcpt}/postrimm_multiqc* ./FastQC/Lecturas_pt/multiQC
+rm -R ${dirmqcpt}/multiqc_data
 
+#-----------------------------------
 mkdir -p KRAKEN2
-#Mover los archivos obtenidos por KRAKEN2 a la carpeta KRAKEN2
-mv /home/admcenasa/Analisis_corridas/kraken2/bacteria/*kraken* ./KRAKEN2
+#-----------------------------------
+#mv ${dirk2}/*kraken* ./KRAKEN2
+mv ${dirbk}/* ./KRAKEN2
 
+#-----------------------------------
 mkdir -p KmerFinder
-#Mover los resultados obtenidos por KmerFinder a la carpeta KmerFinder
-mv /home/admcenasa/Analisis_corridas/kmerfinder/bacteria/*results* ./KmerFinder
+#-----------------------------------
+mv ${dirkf}/*results* ./KmerFinder
 
+#-----------------------------------
 mkdir -p MLST
-#Mover los resultados obtenidos por stringMLST a la carpeta MLST
-mv /home/admcenasa/Analisis_corridas/stringMLST/*MLST* ./MLST
-mv /home/admcenasa/Analisis_corridas/MLST/MLST* ./MLST
+#-----------------------------------
+mv ${dirsMLST}/*MLST* ./MLST
+mv ${dirMLST}/MLST* ./MLST
 
+#-----------------------------------
 mkdir -p RAM
-#Mover los resultados obtenidos por AMRFinderPlus a la carpeta RAM
-mv /home/admcenasa/Analisis_corridas/AMRFinder/* ./RAM
+#-----------------------------------
+mv ${dirRAM}/* ./RAM
 
+#-----------------------------------
 mkdir -p Estadisticos
-#Mover archivos con estadisticos
-mv /home/admcenasa/Analisis_corridas/fastQC/bacteria/estadisticos/*stats* ./Estadisticos
-mv /home/admcenasa/Analisis_corridas/fastQC_ptrim/bacteria/estadisticos/*stats_pt* ./Estadisticos
-mv /home/admcenasa/Analisis_corridas/SPAdes/bacteria/estadisticos/*global* ./Estadisticos 
+#-----------------------------------
+mv ${dirfq}/estadisticos/*stats* ./Estadisticos
+mv ${dirfqpt}/estadisticos/*stats_pt* ./Estadisticos
+mv ${direns}/estadisticos/*global* ./Estadisticos
 
+#-----------------------------------
 mkdir -p Lecturas_crudas
-mv /home/admcenasa/Analisis_corridas/Corrida_bacterias/*fastq.gz ./Lecturas_crudas
+#-----------------------------------
+mv ${dirlc}/*fastq.gz ./Lecturas_crudas
 
-rm /home/admcenasa/Analisis_corridas/SPAdes/bacteria/*fa
-rm -R /home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria/*
+rm ${direns}/*fa
+rm -R ${dirpt}/*

@@ -5,49 +5,36 @@ echo -e ======= Iniciando ensamble de genomas bacterianos con SPAdes ======= "\n
 echo -e  "\t"               ===== Inicio: $(date) ===== "\n"
 echo -e "###################################################################" "\n"
 
-# -------------------------------------------------------------------
-# Cámbio de directorio a donde se encuentran las lecturas postrimming
-# -------------------------------------------------------------------
+#-------------------------------------------------------------------
+# Definir rutas de directorios de entrada y salida
+dirfq="/home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria"
+dirout="/home/admcenasa/Analisis_corridas/SPAdes/bacteria"
+#--------------------------------------------------------------------
 
-cd /home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria
+cd ${dirfq}
 
 for R1 in *_R1_* ; do
     R2=${R1/_R1_/_R2_}
     ID="$(basename ${R1} | cut -d '_' -f '1')"
 
-# --------------------------------------------------------------------------------------------------------------------
-# Ejecuta SPAdes sobre mis lecturas R1 y R2 y genera el archivo de salida ${ID}_SPAdes
-# --------------------------------------------------------------------------------------------------------------------
+spades.py --isolate -1 ${R1} -2 ${R2} \
+            -t 25 \
+            -o ${dirout}/${ID}_SPAdes
 
-spades.py   --isolate -1 ${R1} \
-                      -2 ${R2} \
-           -t 15 -o /home/admcenasa/Analisis_corridas/SPAdes/bacteria/${ID}_SPAdes
+mv ${dirout}/${ID}_SPAdes/contigs.fasta ${dirout}/${ID}_SPAdes/${ID}-SPAdes-assembly.fasta
+mv ${dirout}/${ID}_SPAdes/${ID}-SPAdes-assembly.fasta ${dirout}/.
+rm -R ${dirout}/${ID}_SPAdes
 
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------
-# Cámbio de nombre del archivo "contigs.fasta" a "${ID}-SPAdes-assembly.fasta" y elimina el directorio "${ID}_SPAdes" con los archivos no necesarios
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------
+# Eliminar todos los contigs menores a 100 pb
+# --------------------------------------------
 
-mv /home/admcenasa/Analisis_corridas/SPAdes/bacteria/${ID}_SPAdes/contigs.fasta /home/admcenasa/Analisis_corridas/SPAdes/bacteria/${ID}_SPAdes/${ID}-SPAdes-assembly.fasta
-mv /home/admcenasa/Analisis_corridas/SPAdes/bacteria/${ID}_SPAdes/${ID}-SPAdes-assembly.fasta /home/admcenasa/Analisis_corridas/SPAdes/bacteria/.
-rm -R /home/admcenasa/Analisis_corridas/SPAdes/bacteria/${ID}_SPAdes
+seqtk seq -L 100 ${dirout}/${ID}-SPAdes-assembly.fasta > ${dirout}/${ID}-SPAdes-assembly.fa
+chmod -R 775 ${dirout}/${ID}-SPAdes-assembly.fa
 
-# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# Ejecuta seqtk sobre "${ID}-SPAdes-assembly.fasta" para eliminar todos los contigs menores a 450 pb y nombra el archivo de salida como "${ID}-SPAdes-assembly.fa"
-# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+rm ${dirout}/${ID}-SPAdes-assembly.fasta
 
-
-seqtk seq -L 100 /home/admcenasa/Analisis_corridas/SPAdes/bacteria/${ID}-SPAdes-assembly.fasta > /home/admcenasa/Analisis_corridas/SPAdes/bacteria/${ID}-SPAdes-assembly.fa
-
-chmod -R 775 /home/admcenasa/Analisis_corridas/SPAdes/bacteria/${ID}-SPAdes-assembly.fa
-
-# --------------------------------------------------------------------------------------------------
-# Remueve los primeros archivos de contigs a modo de solo conservar los archivos generados por seqtk
-# --------------------------------------------------------------------------------------------------
-
-rm /home/admcenasa/Analisis_corridas/SPAdes/bacteria/${ID}-SPAdes-assembly.fasta
-
-done #término del ciclo iniciado con "for"
-
+done
 
 echo -e "##################################################################" "\n"
 echo -e "\t" ===== Ensamble de genomas bacterianos terminado: $(date) ===== "\n"

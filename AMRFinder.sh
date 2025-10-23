@@ -11,15 +11,19 @@ echo -e "#######################################################################
 #Para actualizar la base de datos de AMRFinder: amrfinder -u
 #Para conocer la lista de organismos disponibles para la opción --organism: amrfinder -l
 
-# -------------------------------------------
-# Correr AMRFinder para identificar genes RAM
-#--------------------------------------------
-cd /home/admcenasa/Analisis_corridas/SPAdes/bacteria
+#---------------------------------------------------------------------------------
+# Definir rutas de directorios de entrada y salida
+dirfa="/home/admcenasa/Analisis_corridas/SPAdes/bacteria" # Directorio donde están los archivos .fa para analizar
+dirout="/home/admcenasa/Analisis_corridas/AMRFinder" # Directorio de salida de los archivos de AMRFinder
+dirkmer="/home/admcenasa/Analisis_corridas/kmerfinder/bacteria" # Directorio donde están los archivos .spa de kmerfinder, para la identificación de mutaciones por género bacteriano
+#---------------------------------------------------------------------------------
+
+cd ${dirfa}
 
 for RAM in *.fa; do
     ID=$(basename ${RAM} | cut -d '-' -f '1')
 
-amrfinder --nucleotide ${RAM} --plus --nucleotide_output /home/admcenasa/Analisis_corridas/AMRFinder/${ID}_nuc.fa --output /home/admcenasa/Analisis_corridas/AMRFinder/${ID}_gen_temp.tsv
+amrfinder --nucleotide ${RAM} --plus --nucleotide_output ${dirout}/${ID}_nuc.fa --output ${dirout}/${ID}_gen_temp.tsv
 
 done
 
@@ -39,7 +43,7 @@ for especie in  Salmonella Escherichia Campylobacter Enterobacter_cloacae Entero
     genero=$(basename ${especie} | cut -d '_' -f '1')
 echo -e "Genero: ${genero}"
 
-for file in /home/admcenasa/Analisis_corridas/kmerfinder/bacteria/*.spa; do
+for file in ${dirkmer}/*.spa; do
     gene=$(cat ${file} | sed -n '2p' | cut -d ' ' -f '2' | tr ' ' '_')
     organism=$(cat ${file} | sed -n '2p' | cut -d ' ' -f '2,3' | tr ' ' '_')
     ID_org=$(basename ${file} | cut -d '_' -f '1')
@@ -56,7 +60,7 @@ echo -e "If control: ${genero} ${gene}"
     if [[ ${ID_org} == ${ID} ]]; then
 echo -e "If control: ${ID_org} ${ID}"
 
-amrfinder --nucleotide ${AMR} --organism Salmonella --mutation_all /home/admcenasa/Analisis_corridas/AMRFinder/${ID}_mut_temp.tsv
+amrfinder --nucleotide ${AMR} --organism Salmonella --mutation_all ${dirout}/${ID}_mut_temp.tsv
 
 else
         continue
@@ -72,7 +76,7 @@ echo -e "If control: ${genero} ${gene}"
     if [[ ${ID_org} == ${ID} ]]; then
 echo -e "If control: ${ID_org} ${ID}"
 
-amrfinder --nucleotide ${AMR} --organism Escherichia --mutation_all /home/admcenasa/Analisis_corridas/AMRFinder/${ID}_mut_temp.tsv
+amrfinder --nucleotide ${AMR} --organism Escherichia --mutation_all ${dirout}/${ID}_mut_temp.tsv
 
 else
         continue
@@ -88,7 +92,7 @@ echo -e "If control: ${especie} ${organism}"
     if [[ ${ID_org} == ${ID} ]]; then
 echo -e "If control: ${ID_org} ${ID}"
 
-amrfinder --nucleotide ${AMR} --organism Enterococcus_faecalis --mutation_all /home/admcenasa/Analisis_corridas/AMRFinder/${ID}_mut_temp.tsv
+amrfinder --nucleotide ${AMR} --organism Enterococcus_faecalis --mutation_all ${dirout}/${ID}_mut_temp.tsv
 
 else
         continue
@@ -104,7 +108,7 @@ echo -e "If control: ${especie} ${organism}"
     if [[ ${ID_org} == ${ID} ]]; then
 echo -e "If control: ${ID_org} ${ID}"
 
-amrfinder --nucleotide ${AMR} --organism Staphylococcus_aureus --mutation_all /home/admcenasa/Analisis_corridas/AMRFinder/${ID}_mut_temp.tsv
+amrfinder --nucleotide ${AMR} --organism Staphylococcus_aureus --mutation_all ${dirout}/${ID}_mut_temp.tsv
 
 #else
  #       continue
@@ -130,14 +134,14 @@ done
 
 if compgen -G "/home/admcenasa/Analisis_corridas/AMRFinder/*_nuc.fa" > /dev/null; then
     mkdir -p "/home/admcenasa/Analisis_corridas/AMRFinder/Nucleotide"
-    mv /home/admcenasa/Analisis_corridas/AMRFinder/*_nuc.fa "/home/admcenasa/Analisis_corridas/AMRFinder/Nucleotide"
+    mv ${dirout}/*_nuc.fa "/home/admcenasa/Analisis_corridas/AMRFinder/Nucleotide"
 fi
 
 # -----------------------------------------------------------------
 # Filtrar los archivos para solo obtener los genes y mutaciones RAM
 # -----------------------------------------------------------------
 
-cd /home/admcenasa/Analisis_corridas/AMRFinder
+cd ${dirout}
 
 #Genes RAM
 if compgen -G "./*_gen_temp.tsv" > /dev/null; then
@@ -175,7 +179,7 @@ fi
 # ---------------------------------------------------------------
 
 ##### Genes #####
-cd /home/admcenasa/Analisis_corridas/AMRFinder
+cd ${dirout}
 
 if compgen -G "./*_gen_filt_tmp.tsv" > /dev/null; then
 	for gen in *_gen_filt_tmp.tsv; do
@@ -203,7 +207,7 @@ rm ./*temp*
 #rm *mutresist_tmp*
 #rm *_mut_filt*
 
-rm /home/admcenasa/Analisis_corridas/kmerfinder/bacteria/*spa
+rm ${dirkmer}/*spa
 
 echo -e  "###############################################################"
 echo -e "\t"                    ===== Fin: $(date) =====

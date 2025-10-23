@@ -12,19 +12,23 @@ echo -e "#######################################################################
 #Nota: Se necesita un archivo fasta (.tfa) para cada uno de los alelos y un archivo config.txt
 #Para descargar otro organismo: https://pubmlst.org/organisms
 #Para mostrar los esquemas disponibles de especies: stringMLST.py --getMLST --species list
+#Para descargar un esquema disponible en stringMLST: stringMLST.py --getMLST -P Enterococcus_faecium/Enterococcus_faecium --species Enterococcus faecium
 
-#ln -s /home/secuenciacion_cenasa/Programas_Bioinformaticos/stringMLST/mlst_dbs/* $(pwd)
+#-------------------------------------------------------------------
+# Definir rutas de directorios de entrada y salida
+dirfq="/home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria"
+dirkf="/home/admcenasa/Analisis_corridas/kmerfinder/bacteria"
+dirdb="/home/admcenasa/db/mlst_dbs/old"
+dirout="/home/admcenasa/Analisis_corridas/stringMLST"
+#--------------------------------------------------------------------
 
-# ------------------------------------------------------------------
-# Definir especie y género de las bacterias de interés para análisis
-# ------------------------------------------------------------------
-cd /home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria
+cd ${dirfq}
 
 for especie in Avibacterium_paragallinarum Brucella_spp Salmonella_enterica Enterococcus_faecalis Enterococcus_faecium Mycobacteria_spp Staphylococcus_aureus; do
     genero=$(basename ${especie} | cut -d '_' -f '1')
 echo -e "\t ########## Genero: ${genero} ##########"
 
-for file in /home/admcenasa/Analisis_corridas/kmerfinder/bacteria/*.spa; do
+for file in ${dirkf}/*.spa; do
     gene=$(cat ${file} | sed -n '2p' | cut -d ' ' -f '2')
     organism=$(cat ${file} | sed -n '2p' | cut -d ' ' -f '2,3' | tr ' ' '_')
     ID_org=$(basename ${file} | cut -d '_' -f '1')
@@ -33,19 +37,18 @@ for R1 in *R1_trimm.fastq.gz; do
     R2=${R1/_R1_/_R2_}
     ID=$(basename ${R1} | cut -d '_' -f '1')
 
-dirdb="/home/admcenasa/Programas_bioinformaticos/stringMLST/mlst_dbs"
-dirout="/home/admcenasa/Analisis_corridas/stringMLST"
-
 #---------- Tipificación para Avibacterium ----------#
 
 case ${especie} in Avibacterium_paragallinarum)
     if [[ ${ID_org} == ${ID} ]]; then
-                                     echo -e "If control: ${ID_org} ${ID}"
+                   echo -e "If control: ${ID_org} ${ID}"
     if [[ ${organism} != "Avibacterium_paragallinarum" ]]; then
+
 continue
+
 	else
      if [[ ! -f stringMLST_temp_${genero}.tsv ]]; then
-				     echo -e "\t ---------- Tipificando ${ID} ----------"
+		   echo -e "\t ---------- Tipificando ${ID} ----------"
           stringMLST.py --predict -1 ${R1} -2 ${R2} \
                         -P ${dirdb}/Avibacterium_paragallinarum/Avibacterium \
                         -o ${dirout}/${ID}_stringMLST_tmp_${genero}.tsv
@@ -63,7 +66,9 @@ cat ${dirout}/${ID}_stringMLST_tmp_${genero}.tsv >> ${dirout}/stringMLST_result_
     if [[ ${ID_org} == ${ID} ]]; then
                                      echo -e "If control: ${ID_org} ${ID}"
     if [[ ${gene} != "Brucella" ]]; then
+
 continue
+
         else
      if [[ ! -f stringMLST_temp_${genero}.tsv ]]; then
 				echo -e "\t ---------- Tipificando ${ID} ----------"
@@ -85,7 +90,9 @@ cat ${dirout}/${ID}_stringMLST_tmp_${genero}.tsv >> ${dirout}/stringMLST_result_
     if [[ ${ID_org} == ${ID} ]]; then
                                      echo -e "If control: ${ID_org} ${ID}"
     if [[ ${organism} != "Salmonella_enterica" ]]; then
+
 continue
+
         else
      if [[ ! -f stringMLST_temp_${genero}.tsv ]]; then
 				echo -e "\t ---------- Tipificando ${ID} ----------" 
@@ -107,7 +114,9 @@ cat ${dirout}/${ID}_stringMLST_tmp_${genero}.tsv >> ${dirout}/stringMLST_result_
     if [[ ${ID_org} == ${ID} ]]; then
                                      echo -e "If control: ${ID_org} ${ID}"
     if [[ ${organism} != "Enterococcus_faecalis" ]]; then
+
 continue
+
         else
      if [[ ! -f stringMLST_temp_${especie}.tsv ]]; then
 				echo -e "\t ---------- Tipificando ${ID} ----------"
@@ -128,7 +137,9 @@ else
     if [[ ${ID_org} == ${ID} ]]; then
                                      echo -e "If control: ${ID_org} ${ID}"
     if [[ ${organism} != "Enterococcus_faecium" ]]; then
+
 continue
+
 	else
      if [[ ! -f stringMLST_temp_${especie}.tsv ]]; then
 				echo -e "\t ---------- Tipificando ${ID} ----------"
@@ -149,7 +160,9 @@ else
     if [[ ${ID_org} == ${ID} ]]; then
                                      echo -e "If control: ${ID_org} ${ID}"
     if [[ ${gene} != "Mycobacterium" ]]; then
+
 continue
+
         else
      if [[ ! -f stringMLST_temp_${especie}.tsv ]]; then
 				echo -e "\t ---------- Tipificando ${ID} ----------"
@@ -170,7 +183,9 @@ else
 	if [[ ${ID_org} == ${ID} ]]; then
                                      echo -e "If control: ${ID_org} ${ID}"
 	if [[ ${organism} != "Staphylococcus_aureus" ]]; then
+
 continue
+
         else
      if [[ ! -f stringMLST_temp_${genero}.tsv ]]; then
 					echo -e "\t ---------- Tipificando ${ID} ----------"
@@ -180,16 +195,16 @@ continue
 cat ${dirout}/${ID}_stringMLST_tmp_${genero}.tsv >> ${dirout}/stringMLST_result_${genero}.tsv | sort -r | uniq
 
 
-fi
-fi
-fi
-esac
-done
+          fi
+         fi
+       fi
+    esac
+  done
 #	 rm ${especie}*
-done
+ done
 done
 
-rm /home/admcenasa/Analisis_corridas/stringMLST/*_tmp_*
+rm ${dirout}/*_tmp_*
 
 echo -e "###############################################################################" "\n"
 echo -e =============== Determinación del MLST sobre lecturas terminada =============== "\n"

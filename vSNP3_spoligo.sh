@@ -1,16 +1,25 @@
 #!/bin/bash
 
-echo -e "######################################################################################" "\n"
-
+echo -e "########################################################################################" "\n"
 echo -e ========== Iniciando espoligotipificación en lecturas de M.Bovis con vSNP3 ========== "\n"
-
 echo -e "\t" =============== Inicio: $(date) ===============  "\n"
+echo -e "########################################################################################"
 
-echo -e "######################################################################################"
+# Secuencia de referencia para colocar en ${diref}:
+#                -> Mycobacterium_bovis_AF212297: LT708304.1
+#
+#---------------------------------------------------------------------------------------------
+# Definir rutas de directorios de entrada y salida
+dirfq="/home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria"
+dirkf="/home/admcenasa/Analisis_corridas/kmerfinder/bacteria"
+dir="/home/admcenasa/Analisis_corridas/vSNP3"
+diref="/home/admcenasa/Programas_bioinformaticos/vSNP3-3.26/dependencies/Mycobacterium_AF2122"
+dirout="/home/admcenasa/Analisis_corridas/Resultados_all_bacteria"
+#----------------------------------------------------------------------------------------------
 
-cd /home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria
+cd ${dirfq}
 
-for file in /home/admcenasa/Analisis_corridas/kmerfinder/bacteria/*.spa; do
+for file in ${dirkf}/*.spa; do
     gene=$(cat ${file} | sed -n '2p' | cut -d ' ' -f '2')
     organism=$(cat ${file} | sed -n '2p' | cut -d ' ' -f '2,3' | tr ' ' '_')
     ID_org=$(basename ${file} | cut -d '_' -f '1')
@@ -20,9 +29,9 @@ for R1 in *_R1_*fastq.gz; do
     R2=${R1/_R1_/_R2_}
     ID_R2=$(basename ${R2} | cut -d '_' -f '1')
 
-# -------------------------------------------------------------------------------------------------------
-# Control para identificar las muestras que corresponden a Mycobacterium con los resultados de KmerFinder
-# -------------------------------------------------------------------------------------------------------
+# --------
+# Control
+# --------
 
 if [[ ${ID_org} == ${ID_R1} && ${ID_R2} ]]; then
         echo -e "If control: Reads: ${ID_R1} ${ID_R2} Ensamble: ${ID_org}"
@@ -36,15 +45,15 @@ echo -e "###################################"
 echo -e "Corriendo vSNP3 sobre: ${ID_R1}"
 echo -e "###################################" "\n"
 
-# ----------------------------------------------------
-# Correr vSNP3 sobre las lecturas de M.Bovis obtenidas
-# ----------------------------------------------------
-dir="/home/admcenasa/Analisis_corridas/vSNP3"
-
-vsnp3_step1.py -r1 ${R1} -r2 ${R2} -t /home/admcenasa/Programas_bioinformaticos/vSNP3/dependencies/Mycobacterium_AF2122 --spoligo -o ${dir}/${ID_R1}_spoligo_vsnp3
+vsnp3_step1.py -r1 ${R1} -r2 ${R2} \
+               -t ${diref} \
+               --spoligo \
+               -o ${dir}/${ID_R1}_spoligo_vsnp3
 
 xlsx2csv -d "\t" ${dir}/${ID_R1}_spoligo_vsnp3/*.xlsx  ${dir}/${ID_R1}_spoligo_vsnp3/${ID_R1}_spoligo_vSNP3_tmp.tsv
-cat ${dir}/${ID_R1}_spoligo_vsnp3/${ID_R1}_spoligo_vSNP3_tmp.tsv | tr " " "_" | awk '{print $1"\t"$25"\t"$26"\t"$27"\t"$28}' > ${dir}/${ID_R1}_spoligo_vsnp3/${ID_R1}_spoligo_vSNP3.tsv
+
+cat ${dir}/${ID_R1}_spoligo_vsnp3/${ID_R1}_spoligo_vSNP3_tmp.tsv | tr " " "_" \
+   | awk '{print $1"\t"$25"\t"$26"\t"$27"\t"$28}' > ${dir}/${ID_R1}_spoligo_vsnp3/${ID_R1}_spoligo_vSNP3.tsv
 
 mv ${dir}/${ID_R1}_spoligo_vsnp3/*_spoligo_vSNP3.tsv ${dir}/
 mv ${dir}/${ID_R1}_spoligo_vsnp3/*log* ${dir}/
@@ -59,8 +68,6 @@ rm -R ${dir}/${ID_R1}_spoligo_vsnp3/
     fi
  done
 done
-
-dir="/home/admcenasa/Analisis_corridas/vSNP3"
 
 if compgen -G "${dir}/*_log.txt" > /dev/null; then
     mkdir -p "${dir}/vSNP3_log"
@@ -86,20 +93,17 @@ cd ${dir}
 	if [[ -f ./vSNP3_Spoligo_Prediction.tsv ]]; then
 	if [[ -d ./PDF_reports ]]; then
 	if [[ -d ./vSNP3_log ]]; then
-mkdir -p /home/admcenasa/Analisis_corridas/Resultados_all_bacteria/vSNP3
+mkdir -p ${dirout}/vSNP3
 
-mv ./vSNP3_Spoligo_Prediction.tsv /home/admcenasa/Analisis_corridas/Resultados_all_bacteria/vSNP3
-mv ./PDF_reports /home/admcenasa/Analisis_corridas/Resultados_all_bacteria/vSNP3
-mv ./vSNP3_log /home/admcenasa/Analisis_corridas/Resultados_all_bacteria/vSNP3
+mv ./vSNP3_Spoligo_Prediction.tsv ${dirout}/vSNP3
+mv ./PDF_reports ${dirout}/vSNP3
+mv ./vSNP3_log ${dirout}/vSNP3
 
    fi
   fi
  fi
 
 echo -e "################################################################" "\n"
-
 echo -e ========== Espoligotipificación de M.Bovis terminada ========== "\n"
-
 echo -e "\t" =============== Fin: $(date) =============== "\n"
-
 echo -e "################################################################"

@@ -1,29 +1,26 @@
 #!/bin/bash
 
 echo -e "#####################################################################################" "\n"
-
 echo -e  ===== Identificación de genes de RAM en ensambles bacterianos con ResFinder ===== "\n"
-
 echo -e          "\t"               ===== Inicio: $(date) ===== "\n"
-
 echo -e "######################################################################################" "\n"
 
-cd /home/admcenasa/Analisis_corridas/SPAdes/bacteria
+#-------------------------------------------------------------------
+# Definir rutas de directorios de entrada y salida
+dirfa="/home/admcenasa/Analisis_corridas/SPAdes/bacteria"
+blastn_PATH="/home/admcenasa/Programas_bioinformaticos/ncbi-blast-2.16.0+/bin/blastn"
+dirout="/home/admcenasa/Analisis_corridas/resfinder"
+dirkf="/home/admcenasa/Analisis_corridas/kmerfinder/bacteria"
+#--------------------------------------------------------------------
 
-# ---------------------
-# Correr solo ResFinder
-#----------------------
+cd ${dirfa}
 
 for RAM in *.fa; do
     ID=$(basename ${RAM} | cut -d '-' -f '1')
 
-blastn_PATH="/home/admcenasa/Programas_bioinformaticos/ncbi-blast-2.16.0+/bin/blastn"
-dirout="/home/admcenasa/Analisis_corridas/resfinder"
-
 echo -e "########## ${ID} ##########"
 
 python -m resfinder -ifa ${RAM} -b ${blastn_PATH} -o ${dirout}/${ID}_RF_out -db_res $RF_DB_PATH --acquired
-
 
 mv ${dirout}/${ID}_RF_out/ResFinder_results_tab.txt ${dirout}/${ID}_RF_out/${ID}_RF_results_tmp.txt
 mv ${dirout}/${ID}_RF_out/${ID}_RF_results_tmp.txt ${dirout}/.
@@ -48,16 +45,13 @@ for especie in Salmonella Escherichia_coli Campylobacter Enterococcus_faecium En
 
 echo -e "Genero: ${genero}"
 
-for file in /home/admcenasa/Analisis_corridas/kmerfinder/bacteria/*.spa; do
+for file in ${dirkf}/*.spa; do
     gene=$(cat ${file} | sed -n '2p' | cut -d ' ' -f '2' | tr ' ' '_')
     organism=$(cat ${file} | sed -n '2p' | cut -d ' ' -f '2,3' | tr ' ' '_')
     ID_org=$(basename ${file} | cut -d '_' -f '1')
 
 for RAM in *.fa; do
     ID=$(basename ${RAM} | cut -d '-' -f '1')
-
-blastn_PATH="/home/admcenasa/Programas_bioinformaticos/ncbi-blast-2.16.0+/bin/blastn"
-dirout="/home/admcenasa/Analisis_corridas/resfinder"
 
 ########################################################
 ########### Mutaciones de RAM para Salmonella ##########
@@ -68,7 +62,12 @@ echo -e "If control: ${genero} ${gene}"
     if [[ ${ID_org} == ${ID} ]]; then
 echo -e "If control: ${ID_org} ${ID}"
 
-python -m resfinder -ifa ${RAM} -s "Salmonella" -b ${blastn_PATH} -o ${dirout}/${ID}_PF_out -db_res $RF_DB_PATH -db_point $PF_DB_PATH --point
+python -m resfinder -ifa ${RAM} \
+       -s "Salmonella" \
+       -b ${blastn_PATH} \
+       -o ${dirout}/${ID}_PF_out \
+       -db_res $RF_DB_PATH \
+       -db_point $PF_DB_PATH --point
 
 mv ${dirout}/${ID}_PF_out/PointFinder_results.txt ${dirout}/${ID}_PF_out/${ID}_PF_results_tmp.txt
 mv ${dirout}/${ID}_PF_out/${ID}_PF_results_tmp.txt ${dirout}/.
@@ -88,7 +87,12 @@ echo -e "If control: ${especie} ${organism}"
     if [[ ${ID_org} == ${ID} ]]; then
 echo -e "If control: ${ID_org} ${ID}"
 
-python -m resfinder -ifa ${RAM} -s "Escherichia coli" -b ${blastn_PATH} -o ${dirout}/${ID}_PF_out -db_res $RF_DB_PATH -db_point $PF_DB_PATH --point
+python -m resfinder -ifa ${RAM} \
+       -s "Escherichia coli" \
+       -b ${blastn_PATH} \
+       -o ${dirout}/${ID}_PF_out \
+       -db_res $RF_DB_PATH \
+       -db_point $PF_DB_PATH --point
 
 mv ${dirout}/${ID}_PF_out/PointFinder_results.txt ${dirout}/${ID}_PF_out/${ID}_PF_results_tmp.txt
 mv ${dirout}/${ID}_PF_out/${ID}_PF_results_tmp.txt ${dirout}/.
@@ -108,7 +112,12 @@ echo -e "If control: ${especie} ${organism}"
     if [[ ${ID_org} == ${ID} ]]; then
 echo -e "If control: ${ID_org} ${ID}"
 
-python -m resfinder -ifa ${RAM} -s "Staphylococcus aureus" -b ${blastn_PATH} -o ${dirout}/${ID}_PF_out -db_res $RF_DB_PATH -db_point $PF_DB_PATH --point
+python -m resfinder -ifa ${RAM} \
+       -s "Staphylococcus aureus" \
+       -b ${blastn_PATH} \
+       -o ${dirout}/${ID}_PF_out \
+       -db_res $RF_DB_PATH \
+       -db_point $PF_DB_PATH --point
 
 mv ${dirout}/${ID}_PF_out/PointFinder_results.txt ${dirout}/${ID}_PF_out/${ID}_PF_results_tmp.txt
 mv ${dirout}/${ID}_PF_out/${ID}_PF_results_tmp.txt ${dirout}/.
@@ -128,7 +137,12 @@ echo -e "If control: ${especie} ${organism}"
     if [[ ${ID_org} == ${ID} ]]; then
 echo -e "If control: ${ID_org} ${ID}"
 
-python -m resfinder -ifa ${RAM} -s "Enterococcus faecalis" -b ${blastn_PATH} -o ${dirout}/${ID}_PF_out -db_res $RF_DB_PATH -db_point $PF_DB_PATH --point
+python -m resfinder -ifa ${RAM} \
+       -s "Enterococcus faecalis" \
+       -b ${blastn_PATH} \
+       -o ${dirout}/${ID}_PF_out \
+       -db_res $RF_DB_PATH \
+       -db_point $PF_DB_PATH --point
 
 mv ${dirout}/${ID}_PF_out/PointFinder_results.txt ${dirout}/${ID}_PF_out/${ID}_PF_results_tmp.txt
 mv ${dirout}/${ID}_PF_out/${ID}_PF_results_tmp.txt ${dirout}/.
@@ -148,7 +162,12 @@ echo -e "If control: ${especie} ${organism}"
     if [[ ${ID_org} == ${ID} ]]; then
 echo -e "If control: ${ID_org} ${ID}"
 
-python -m resfinder -ifa ${RAM} -s "Enterococcus faecium" -b ${blastn_PATH} -o ${dirout}/${ID}_PF_out -db_res $RF_DB_PATH -db_point $PF_DB_PATH --point
+python -m resfinder -ifa ${RAM} \
+       -s "Enterococcus faecium" \
+       -b ${blastn_PATH} \
+       -o ${dirout}/${ID}_PF_out \
+       -db_res $RF_DB_PATH \
+       -db_point $PF_DB_PATH --point
 
 mv ${dirout}/${ID}_PF_out/PointFinder_results.txt ${dirout}/${ID}_PF_out/${ID}_PF_results_tmp.txt
 mv ${dirout}/${ID}_PF_out/${ID}_PF_results_tmp.txt ${dirout}/.
@@ -161,11 +180,11 @@ rm -R ${dirout}/${ID}_PF_out
 # ;;
 
 
-fi
-fi
-esac
-done
-done
+	    fi
+	   fi
+	esac
+     done
+  done
 done
 
 #El_bueno: ResFinder_results_tab.txt
@@ -180,7 +199,7 @@ done
 ##### Genes #####
 # ----------------
 
-cd /home/admcenasa/Analisis_corridas/resfinder
+cd ${dirout}
 
 if compgen -G "./*RF_results_tmp.txt" > /dev/null; then
         for gen in *RF_results_tmp.txt; do
@@ -204,11 +223,9 @@ echo -e "\n########## ${ename} ########## \n$(cat ${mut})"
 rm *PF_results_tmp.txt
         fi
 
-rm /home/admcenasa/Analisis_corridas/kmerfinder/bacteria/*spa
+rm ${dirkf}/*spa
 
 echo -e "#########################################################################################"
 echo -e ========== Identificación de genes y mutaciones de RAM con RF y PF terminada  ==========
 echo -e "\t"  		===== Fin: $(date) =====
 echo -e "#########################################################################################"
-
-
