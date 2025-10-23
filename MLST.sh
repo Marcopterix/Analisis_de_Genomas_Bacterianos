@@ -10,8 +10,8 @@ echo -e "#######################################################################
 
 #-------------------------------------------------------------------
 # Definir rutas de directorios de entrada y salida
-dirfa="/home/admcenasa/Analisis_corridas/SPAdes/bacteria"
-dirout="/home/admcenasa/Analisis_corridas/MLST"
+dirfa="/home/user/Analisis_corridas/SPAdes/bacteria"
+dirout="/home/user/Analisis_corridas/MLST"
 #--------------------------------------------------------------------
 
 cd ${dirfa}
