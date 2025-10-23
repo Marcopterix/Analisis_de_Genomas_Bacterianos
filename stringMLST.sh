@@ -16,10 +16,10 @@ echo -e "#######################################################################
 
 #-------------------------------------------------------------------
 # Definir rutas de directorios de entrada y salida
-dirfq="/home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria"
-dirkf="/home/admcenasa/Analisis_corridas/kmerfinder/bacteria"
-dirdb="/home/admcenasa/db/mlst_dbs/old"
-dirout="/home/admcenasa/Analisis_corridas/stringMLST"
+dirfq="/home/user/Analisis_corridas/Archivos_postrim/bacteria"
+dirkf="/home/user/Analisis_corridas/kmerfinder/bacteria"
+dirdb="/home/user/db/mlst_dbs/old"
+dirout="/home/user/Analisis_corridas/stringMLST"
 #--------------------------------------------------------------------
 
 cd ${dirfq}
