@@ -10,11 +10,11 @@ echo -e "#######################################################################
 #
 #---------------------------------------------------------------------------------------------
 # Definir rutas de directorios de entrada y salida
-dirfq="/home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria"
-dirkf="/home/admcenasa/Analisis_corridas/kmerfinder/bacteria"
-dir="/home/admcenasa/Analisis_corridas/vSNP3"
-diref="/home/admcenasa/Programas_bioinformaticos/vSNP3-3.26/dependencies/Mycobacterium_AF2122"
-dirout="/home/admcenasa/Analisis_corridas/Resultados_all_bacteria"
+dirfq="/home/user/Analisis_corridas/Archivos_postrim/bacteria"
+dirkf="/home/user/Analisis_corridas/kmerfinder/bacteria"
+dir="/home/user/Analisis_corridas/vSNP3"
+diref="/home/user/Programas_bioinformaticos/vSNP3-3.26/dependencies/Mycobacterium_AF2122"
+dirout="/home/user/Analisis_corridas/Resultados_all_bacteria"
 #----------------------------------------------------------------------------------------------
 
 cd ${dirfq}
