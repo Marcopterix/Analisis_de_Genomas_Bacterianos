@@ -7,8 +7,8 @@ echo -e "#######################################################################
 
 #------------------------------------------------------------------
 # Definir rutas de directorios de entrada y salida
-dirfq="/home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria"
-dirout="/home/admcenasa/Analisis_corridas/kraken2/bacteria"
+dirfq="/home/user/Analisis_corridas/Archivos_postrim/bacteria"
+dirout="/home/user/Analisis_corridas/kraken2/bacteria"
 #------------------------------------------------------------------
 
 cd ${dirfq}
