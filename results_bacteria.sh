@@ -7,20 +7,20 @@ echo -e "#######################################################################
 
 #-------------------------------------------------------------------
 # Definir rutas de directorios de entrada y salida
-dirout="/home/admcenasa/Analisis_corridas/Resultados_all_bacteria"
-dirfq="/home/admcenasa/Analisis_corridas/fastQC/bacteria"
-dirfqpt="/home/admcenasa/Analisis_corridas/fastQC_ptrim/bacteria"
-dirmqc="/home/admcenasa/Analisis_corridas/fastQC/bacteria/multiqc"
-dirmqcpt="/home/admcenasa/Analisis_corridas/fastQC_ptrim/bacteria/multiqc"
+dirout="/home/user/Analisis_corridas/Resultados_all_bacteria"
+dirfq="/home/user/Analisis_corridas/fastQC/bacteria"
+dirfqpt="/home/user/Analisis_corridas/fastQC_ptrim/bacteria"
+dirmqc="/home/user/Analisis_corridas/fastQC/bacteria/multiqc"
+dirmqcpt="/home/user/Analisis_corridas/fastQC_ptrim/bacteria/multiqc"
 #dirk2=""
-dirbk="/home/admcenasa/Analisis_corridas/Bracken/bacteria"
-dirkf="/home/admcenasa/Analisis_corridas/kmerfinder/bacteria"
-dirsMLST="/home/admcenasa/Analisis_corridas/stringMLST"
-dirMLST="/home/admcenasa/Analisis_corridas/MLST"
-dirRAM="/home/admcenasa/Analisis_corridas/AMRFinder"
-direns="/home/admcenasa/Analisis_corridas/SPAdes/bacteria"
-dirlc="/home/admcenasa/Analisis_corridas/Corrida_bacterias"
-dirpt="/home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria"
+dirbk="/home/user/Analisis_corridas/Bracken/bacteria"
+dirkf="/home/user/Analisis_corridas/kmerfinder/bacteria"
+dirsMLST="/home/user/Analisis_corridas/stringMLST"
+dirMLST="/home/user/Analisis_corridas/MLST"
+dirRAM="/home/user/Analisis_corridas/AMRFinder"
+direns="/home/user/Analisis_corridas/SPAdes/bacteria"
+dirlc="/home/user/Analisis_corridas/Corrida_bacterias"
+dirpt="/home/user/Analisis_corridas/Archivos_postrim/bacteria"
 #--------------------------------------------------------------------
 
 mkdir -p ${dirout}
