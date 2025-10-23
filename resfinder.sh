@@ -7,10 +7,10 @@ echo -e "#######################################################################
 
 #-------------------------------------------------------------------
 # Definir rutas de directorios de entrada y salida
-dirfa="/home/admcenasa/Analisis_corridas/SPAdes/bacteria"
-blastn_PATH="/home/admcenasa/Programas_bioinformaticos/ncbi-blast-2.16.0+/bin/blastn"
-dirout="/home/admcenasa/Analisis_corridas/resfinder"
-dirkf="/home/admcenasa/Analisis_corridas/kmerfinder/bacteria"
+dirfa="/home/user/Analisis_corridas/SPAdes/bacteria"
+blastn_PATH="/home/user/Programas_bioinformaticos/ncbi-blast-2.16.0+/bin/blastn"
+dirout="/home/user/Analisis_corridas/resfinder"
+dirkf="/home/user/Analisis_corridas/kmerfinder/bacteria"
 #--------------------------------------------------------------------
 
 cd ${dirfa}
