@@ -7,13 +7,13 @@ echo -e "#######################################################################
 
 #---------------------------------------------------------
 # Definir rutas de directorios de entrada y salida
-dirfq="/home/admcenasa/Analisis_corridas/Corrida_bacterias"
-dirfqout="/home/admcenasa/Analisis_corridas/fastQC/bacteria"
-Trimmomatic="java -jar /home/admcenasa/Programas_bioinformaticos/Trimmomatic-0.40/trimmomatic-0.40.jar"
-NexteraPE="/home/admcenasa/Programas_bioinformaticos/Trimmomatic-0.40/adapters/NexteraPE-PE.fa"
-dir="/home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria"
-U1U2="/home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria/U1U2"
-dirfqpt="/home/admcenasa/Analisis_corridas/fastQC_ptrim/bacteria"
+dirfq="/home/user/Analisis_corridas/Corrida_bacterias"
+dirfqout="/home/user/Analisis_corridas/fastQC/bacteria"
+Trimmomatic="java -jar /home/user/Programas_bioinformaticos/Trimmomatic-0.40/trimmomatic-0.40.jar"
+NexteraPE="/home/user/Programas_bioinformaticos/Trimmomatic-0.40/adapters/NexteraPE-PE.fa"
+dir="/home/user/Analisis_corridas/Archivos_postrim/bacteria"
+U1U2="/home/user/Analisis_corridas/Archivos_postrim/bacteria/U1U2"
+dirfqpt="/home/user/Analisis_corridas/fastQC_ptrim/bacteria"
 #---------------------------------------------------------
 
 cd ${dirfq}
