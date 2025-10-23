@@ -13,9 +13,9 @@ echo -e "#######################################################################
 
 #---------------------------------------------------------------------------------
 # Definir rutas de directorios de entrada y salida
-dirfa="/home/admcenasa/Analisis_corridas/SPAdes/bacteria" # Directorio donde están los archivos .fa para analizar
-dirout="/home/admcenasa/Analisis_corridas/AMRFinder" # Directorio de salida de los archivos de AMRFinder
-dirkmer="/home/admcenasa/Analisis_corridas/kmerfinder/bacteria" # Directorio donde están los archivos .spa de kmerfinder, para la identificación de mutaciones por género bacteriano
+dirfa="/home/user/Analisis_corridas/SPAdes/bacteria" # Directorio donde están los archivos .fa para analizar
+dirout="/home/user/Analisis_corridas/AMRFinder" # Directorio de salida de los archivos de AMRFinder
+dirkmer="/home/user/Analisis_corridas/kmerfinder/bacteria" # Directorio donde están los archivos .spa de kmerfinder, para la identificación de mutaciones por género bacteriano
 #---------------------------------------------------------------------------------
 
 cd ${dirfa}
@@ -126,15 +126,15 @@ done
 # ---------------------------
 # Eliminar archivos sin peso
 #----------------------------
-#find /home/admcenasa/Analisis_corridas/AMRFinder/ -type f -size 0 -exec rm -f {} \;
+#find /home/user/Analisis_corridas/AMRFinder/ -type f -size 0 -exec rm -f {} \;
 #if compgen -G "./*_nuc.fa" > /dev/null; then
-#mkdir -p /home/admcenasa/Analisis_corridas/AMRFinder/Nucleotide
-#mv /home/admcenasa/Analisis_corridas/AMRFinder/*nuc* /home/admcenasa/Analisis_corridas/AMRFinder/Nucleotide
+#mkdir -p /home/user/Analisis_corridas/AMRFinder/Nucleotide
+#mv /home/user/Analisis_corridas/AMRFinder/*nuc* /home/admcenasa/Analisis_corridas/AMRFinder/Nucleotide
 #fi
 
-if compgen -G "/home/admcenasa/Analisis_corridas/AMRFinder/*_nuc.fa" > /dev/null; then
-    mkdir -p "/home/admcenasa/Analisis_corridas/AMRFinder/Nucleotide"
-    mv ${dirout}/*_nuc.fa "/home/admcenasa/Analisis_corridas/AMRFinder/Nucleotide"
+if compgen -G "/home/user/Analisis_corridas/AMRFinder/*_nuc.fa" > /dev/null; then
+    mkdir -p "/home/user/Analisis_corridas/AMRFinder/Nucleotide"
+    mv ${dirout}/*_nuc.fa "/home/user/Analisis_corridas/AMRFinder/Nucleotide"
 fi
 
 # -----------------------------------------------------------------
