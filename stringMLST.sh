@@ -9,10 +9,14 @@ echo -e                                ===== Inicio: $(date) ===== "\n"
 echo -e "##########################################################################################" "\n"
 
 #Creación de db de otra especie que no este en la db de stringMLST: stringMLST.py --buildDB -c mlst_dbs/Avibacterium_paragallinarum/Avibacterium_config.txt -P Avibacterium
-#Nota: Se necesita un archivo fasta (.tfa) para cada uno de los alelos y un archivo config.txt
+#Nota: Se necesita un archivo fasta ("Sp"_"gen".tfa) para cada uno de los alelos, 
+#                  un archivo "Sp"_config.txt
+#                  un archivo "Sp"_profile.txt
 #Para descargar otro organismo: https://pubmlst.org/organisms
 #Para mostrar los esquemas disponibles de especies: stringMLST.py --getMLST --species list
 #Para descargar un esquema disponible en stringMLST: stringMLST.py --getMLST -P Enterococcus_faecium/Enterococcus_faecium --species Enterococcus faecium
+
+
 
 #-------------------------------------------------------------------
 # Definir rutas de directorios de entrada y salida
