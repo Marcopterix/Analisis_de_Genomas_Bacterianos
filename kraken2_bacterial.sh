@@ -1,58 +1,64 @@
 #!/bin/bash
 
-echo -e "###################################################################################################" "\n"
-echo -e ===== Ejecutar kraken2 sobre lecturas posttrimming para identificación taxonómica de bacterias ===== "\n"
-echo -e                              ===== Inicio: $(date) ===== "\n"
-echo -e "###################################################################################################" "\n"
+echo -e "######################################################################################################################" "\n"
+echo -e  ========= Determinación de abundancia de especies con KRAKEN2 en secuencias bacterianas ========== "\n"
+echo -e "\t" ===== Inicio: $(date) ===== "\n"
+echo -e "######################################################################################################################" "\n"
 
-#------------------------------------------------------------------
-# Definir rutas de directorios de entrada y salida
-dirfq="/home/user/Analisis_corridas/Archivos_postrim/bacteria"
-dirout="/home/user/Analisis_corridas/kraken2/bacteria"
-#------------------------------------------------------------------
+#---------------------------------------------------------
+dirfq="/home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria"
+dirout="/home/admcenasa/Analisis_corridas/kraken2/bacteria"
+dirbrakout="/home/admcenasa/Analisis_corridas/Bracken/bacteria"
+#---------------------------------------------------------
 
 cd ${dirfq}
 
 for R1 in *_R1_*; do
     R2=${R1/_R1_/_R2_}
-    ID="$(basename ${R1} | cut -d '_' -f '1')"
+    ID=$(basename ${R1} | cut -d '_' -f '1' )
 
-# -------------------------------------------
-# Ejecutar kraken2 sobre las lecturas postrim
-# -------------------------------------------
+# ------------------------------------------------------------------------
 
 echo -e "########## ${ID} ##########"
 
 kraken2 --paired ${R1} ${R2} \
         --gzip-compressed \
-        --db $K2_DB_PATH --use-names --threads 25 \
-        --report ${dirout}/${ID}_kraken2_temp.txt
-
-# ------------------------------------------------------------------------------------------------------------------------
-# Filtra los resultados si en la columna 4 del reporte .txt tiene caracteres S y la columna 1 tiene un valor mayor a 0.01
-# ------------------------------------------------------------------------------------------------------------------------
-
-awk '$4 ~ "[S]" && $1 >= 0.01' ${dirout}/${ID}_kraken2_temp.txt > ${dirout}/${ID}_kraken_species.txt
-
-sed -i '1i coverage%\tcoverage#\tasigned\trank_especie\tNCBItaxonomicID\ttaxonomic_name' ${dirout}/${ID}_kraken_species.txt
+        --db $K2_DB_PATH \
+        --use-names \
+        --threads 25 \
+        --report ${dirout}/${ID}_K2report.txt > ${dirout}/${ID}_kraken2_out.txt
 
 	done
 
-# ----------------------------------------
-# Realizar gráficos interactivos con Krona
-# ----------------------------------------
+rm ${dirout}/*kraken2_out*
+
+# ----------------------------------------------------
 
 cd ${dirout}
 
-for kraken in *kraken2_temp*; do
-    ID=$(basename ${kraken} | cut -d '_' -f '1')
+for K2 in *K2report*; do
+    ID=$(basename ${K2} | cut -d '_' -f '1')
 
-ImportTaxonomy.pl -m 3 -t 5 ${kraken} -o ./${ID}_kraken2_krona.html
+bracken -d $K2_DB_PATH \
+        -i ${K2} \
+        -o ${dirbrakout}/${ID}_bracken_report.tsv \
+        -t 15
 
 	done
 
-rm ${dirout}/*kraken2_temp.txt
+#------------------------------------------------------
 
-echo -e "###########################################" "\n"
-echo -e ===== Fin: $(date) =====    "\n"
-echo -e "###########################################" "\n"
+for k2 in *K2report*; do
+    ID=$(basename ${k2} | cut -d '_' -f '1')
+
+ImportTaxonomy.pl -t 5 -s 1 -m 3 ${k2} -o ${dirbrakout}/${ID}_kraken2_krona.html
+
+	done
+
+rm ${dirout}/*K2report.txt
+rm ${dirout}/*K2report_bracken_species.txt
+
+echo -e "###########################################################################################" "\n"
+echo -e  ========== Análisis de abundancia de especies terminado ========== "\n"
+echo -e "\n" ===== Fin: $(date) ===== "\n"
+echo -e "###########################################################################################"
