@@ -6,9 +6,9 @@ echo -e "\t" ===== Inicio: $(date) ===== "\n"
 echo -e "######################################################################################################################" "\n"
 
 #---------------------------------------------------------
-dirfq="/home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria"
-dirout="/home/admcenasa/Analisis_corridas/kraken2/bacteria"
-dirbrakout="/home/admcenasa/Analisis_corridas/Bracken/bacteria"
+dirfq="$HOME/Analisis_corridas/Archivos_postrim/bacteria"
+dirout="$HOME/Analisis_corridas/kraken2/bacteria"
+dirbrakout="$HOME/Analisis_corridas/Bracken/bacteria"
 #---------------------------------------------------------
 
 cd ${dirfq}
