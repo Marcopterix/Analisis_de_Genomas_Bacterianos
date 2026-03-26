@@ -47,7 +47,7 @@ cd ${dirout}
 for kraken in *kraken2_temp*; do
     ID=$(basename ${kraken} | cut -d '_' -f '1')
 
-ktImportTaxonomy -m 3 -t 5 ${kraken} -o ./${ID}_kraken2_krona.html
+ImportTaxonomy.pl -m 3 -t 5 ${kraken} -o ./${ID}_kraken2_krona.html
 
 	done
 
