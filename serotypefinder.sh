@@ -6,11 +6,10 @@ echo -e                                      ===== Inicio: $(date) ===== "\n"
 echo -e "#####################################################################################################" "\n"
 
 #-------------------------------------------------------------------
-# Definir rutas de directorios de entrada y salida
-dirfa="/home/user/Analisis_corridas/SPAdes/bacteria"
-dirkf="/home/user/Analisis_corridas/kmerfinder/bacteria"
-dir="/home/user/Analisis_corridas/serotypefinder"
-dirout="/home/user/Analisis_corridas/Resultados_all_bacteria"
+dirfa="$HOME/Analisis_corridas/SPAdes/bacteria"
+dirkf="$HOME/Analisis_corridas/kmerfinder/bacteria"
+dir="$HOME/Analisis_corridas/serotypefinder"
+dirout="$HOME/Analisis_corridas/Resultados_all_bacteria"
 #--------------------------------------------------------------------
 
 cd ${dirfa}
@@ -24,16 +23,14 @@ for assembly in *.fa; do
     ID=$(basename ${assembly} | cut -d '-' -f '1')
 
 # --------
-# Control
-# --------
 
 if [[ ${ID} == ${ID_org} ]]; then
         echo -e "If control: ${ID} ${ID_org}"
 if [[ ${organism} != "Escherichia_coli" ]]; then
-        echo -e " ---------- ${ID} encontrado como ${organism}, no encontrado como Escherichia_coli ----------"
+        echo -e "---------- ${ID} encontrado como ${organism}, no encontrado como Escherichia_coli ----------"
 continue
         else
-echo -e " ********** ${ID} encontrado como ${organism} **********" "\n"
+echo -e "********** ${ID} encontrado como ${organism} **********" "\n"
 echo -e "########################################"
 echo -e "Corriendo SerotypeFinder sobre: ${ID}"
 echo -e "########################################" "\n"
@@ -52,16 +49,7 @@ mv ${dir}/${ID}_tmp_SFout/${ID}_results_tmp_SF.tsv ${dir}/.
 
 cat ${dir}/${ID}_results_tmp_SF.tsv | awk '{print $1"\t"$2"\t"$3"\t"$4}' | sed -e "1d" > ${dir}/${ID}_results_tmp.tsv
 
-# ---------------------------------------------------
-# Concatenar todos los archivos de salida en uno solo
-# ---------------------------------------------------
-
 sed -i '1i Database\tGen\tAntigen_prediction\tIdentity' ${dir}/${ID}_results_tmp.tsv
-
-for SF in ${dir}/*results_tmp.tsv; do
-    ID=$(basename ${SF} | cut -d '_' -f '1')
-echo -e "\n ########## \t ${ID} \t ########## \n $(cat ${SF})"
-done >> ${dir}/SF_results_all.tsv
 
 	  fi
 	fi
@@ -69,8 +57,18 @@ done >> ${dir}/SF_results_all.tsv
 done
 
 # ---------------------------------------------------------------------------------------
-# Crear carpeta de resultados finales en caso de que el archivo SF_results_all.tsv exista
-# ---------------------------------------------------------------------------------------
+
+if compgen -G ${dir}/*results_tmp.tsv > /dev/null; then
+
+for SF in ${dir}/*results_tmp.tsv; do
+    ID=$(basename ${SF} | cut -d '_' -f '1')
+
+	echo -e "\n ########## \t ${ID} \t ########## \n $(cat ${SF})" >> ${dir}/SF_results_all.tsv
+
+	done
+    fi
+
+#-----------------------------------------------------------------------------------------
 
 cd ${dir}
 
