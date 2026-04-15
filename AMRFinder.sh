@@ -9,10 +9,10 @@ echo -e "#######################################################################
 #Para conocer la lista de organismos disponibles para la opción --organism: amrfinder -l
 
 #---------------------------------------------------------------------------------
-dirfa="/home/admcenasa/Analisis_corridas/SPAdes/bacteria"
-dirout="/home/admcenasa/Analisis_corridas/AMRFinder"
-dirkmer="/home/admcenasa/Analisis_corridas/kmerfinder/bacteria"
-dirdb="/home/admcenasa/Programas_bioinformaticos/amr-amrfinder_v4.2.7/data/2026-01-21.1"
+dirfa="$HOME/Analisis_corridas/SPAdes/bacteria"
+dirout="$HOME/Analisis_corridas/AMRFinder"
+dirkmer="$HOME/Analisis_corridas/kmerfinder/bacteria"
+dirdb="$HOME/Programas_bioinformaticos/amr-amrfinder_v4.2.7/data/2026-01-21.1"
 #---------------------------------------------------------------------------------
 
 cd ${dirfa}
