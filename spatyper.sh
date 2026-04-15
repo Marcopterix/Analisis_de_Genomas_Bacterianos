@@ -29,7 +29,7 @@ if [[ ${ID} == ${ID_org} ]]; then
 	echo -e "If control: ${ID} ${ID_org}"
 
 if [[ ${org} != "Staphylococcus_aureus" ]]; then
-	echo -e "---------- ${ID} encontrado como ${org}, no encontrado como Staphylococcus aureus. Saltando... ----------"
+	echo -e "---------- ${ID} encontrado como ${org}, no encontrado como Staphylococcus aureus. ---------- \n \n Saltando... \n"
 
 continue
 
