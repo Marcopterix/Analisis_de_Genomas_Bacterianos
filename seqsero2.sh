@@ -6,11 +6,10 @@ echo -e                                   ===== Inicio: $(date) ===== "\n"
 echo -e "##################################################################################################" "\n"
 
 #-------------------------------------------------------------------
-# Definir rutas de directorios de entrada y salida
-dirfa="/home/user/Analisis_corridas/SPAdes/bacteria"
-dirkf="/home/user/Analisis_corridas/kmerfinder/bacteria"
-dirss2="/home/user/Analisis_corridas/seqsero2"
-dirout="/home/user/Analisis_corridas/Resultados_all_bacteria"
+dirfa="$HOME/Analisis_corridas/SPAdes/bacteria"
+dirkf="$HOME/Analisis_corridas/kmerfinder/bacteria"
+dirss2="$HOME/Analisis_corridas/seqsero2"
+dirout="$HOME/Analisis_corridas/Resultados_all_bacteria"
 #--------------------------------------------------------------------
 
 cd ${dirfa}
@@ -23,8 +22,6 @@ for file in ${dirkf}/*.spa; do
 for assembly in *.fa; do
     ID=$(basename ${assembly} | cut -d '-' -f '1')
 
-# ---------
-# Control
 # ---------
 
 if [[ ${ID} == ${ID_org} ]]; then
@@ -47,19 +44,12 @@ SeqSero2_package.py -t 4 \
 
 mkdir -p ${dirss2}/SeqSero2_log
 
-mv ${dirss2}/${ID}_tmp_SeqSero2out/SeqSero_log.txt ${dirss2}/${ID}_tmp_SeqSero2out/${ID}_SeqSero_log.txt
-mv ${dirss2}/${ID}_tmp_SeqSero2out/${ID}_SeqSero_log.txt ${dirss2}/SeqSero2_log/.
-
-# ------------------------------------------
-# Renombrar y mover los archivos *result.tsv
 # ------------------------------------------
 
 mv ${dirss2}/${ID}_tmp_SeqSero2out/SeqSero_result.tsv ${dirss2}/${ID}_tmp_SeqSero2out/${ID}_tmp_result.tsv
 mv ${dirss2}/${ID}_tmp_SeqSero2out/${ID}_tmp_result.tsv ${dirss2}/
 cat ${dirss2}/${ID}_tmp_result.tsv | sed -e "1d" | tr ' ' '_' > ${dirss2}/${ID}_tmp_filt.tsv
 
-# -------------------------------------
-# Modificar los archivos .tsv de salida
 # -------------------------------------
 
 cat ${dirss2}/${ID}_tmp_filt.tsv >> ${dirss2}/SeqSero2_tmp_filt.tsv | uniq
@@ -81,13 +71,10 @@ rm -R *tmp*
 	fi
 
 if [[ -f ./SeqSero2_result_filt.tsv ]]; then
-if [[ -d ./SeqSero2_log ]]; then
 mkdir -p ${dirout}/SeqSero2
 
 mv ./SeqSero2_result_filt.tsv ${dirout}/SeqSero2/
-mv ./SeqSero2_log ${dirout}/SeqSero2/
 
-      fi
     fi
 
 echo -e "###################################################################################" "\n"
