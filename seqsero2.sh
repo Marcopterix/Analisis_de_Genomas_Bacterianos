@@ -30,7 +30,7 @@ for assembly in *.fa; do
 if [[ ${ID} == ${ID_org} ]]; then
         echo -e "If control: ${ID} ${ID_org}"
 if [[ ${gene} != "Salmonella" ]]; then
-        echo -e " ---------- ${ID} encontrado como ${organism}, no encontrado como Salmonella ----------"
+        echo -e " ---------- ${ID} encontrado como ${organism}, no encontrado como Salmonella. ---------- \n \n Saltando... \n"
 continue
 	else
 
