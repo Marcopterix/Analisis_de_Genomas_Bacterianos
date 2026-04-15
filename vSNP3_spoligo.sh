@@ -36,7 +36,7 @@ for R1 in *_R1_*fastq.gz; do
 if [[ ${ID_org} == ${ID_R1} && ${ID_R2} ]]; then
         echo -e "If control: Reads: ${ID_R1} ${ID_R2} Ensamble: ${ID_org}"
 if [[ ${gene} != "Mycobacterium" ]]; then
-        echo -e " ---------- ${ID_R1} encontrado como ${organism}, no encontrado como Mycobacterium ----------"
+        echo -e " ---------- ${ID_R1} encontrado como ${organism}, no encontrado como Mycobacterium. ---------- \n \n Saltando... \n"
 continue
         else
 
