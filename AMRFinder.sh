@@ -1,21 +1,18 @@
 #!/bin/bash
 
 echo -e "#########################################################################################" "\n"
-
-echo -e "\t" ===== Identificación de genes de RAM en ensambles bacterianos con AMRFinderPlus ===== "\n"
-
-echo -e           "\t"               ===== Inicio: $(date) ===== "\n"
-
+echo -e  ===== Identificación de genes de RAM en ensambles bacterianos con AMRFinderPlus ===== "\n"
+echo -e                             ===== Inicio: $(date) ===== "\n"
 echo -e "##########################################################################################" "\n"
 
 #Para actualizar la base de datos de AMRFinder: amrfinder -u
 #Para conocer la lista de organismos disponibles para la opción --organism: amrfinder -l
 
 #---------------------------------------------------------------------------------
-# Definir rutas de directorios de entrada y salida
-dirfa="/home/user/Analisis_corridas/SPAdes/bacteria" # Directorio donde están los archivos .fa para analizar
-dirout="/home/user/Analisis_corridas/AMRFinder" # Directorio de salida de los archivos de AMRFinder
-dirkmer="/home/user/Analisis_corridas/kmerfinder/bacteria" # Directorio donde están los archivos .spa de kmerfinder, para la identificación de mutaciones por género bacteriano
+dirfa="/home/admcenasa/Analisis_corridas/SPAdes/bacteria"
+dirout="/home/admcenasa/Analisis_corridas/AMRFinder"
+dirkmer="/home/admcenasa/Analisis_corridas/kmerfinder/bacteria"
+dirdb="/home/admcenasa/Programas_bioinformaticos/amr-amrfinder_v4.2.7/data/2026-01-21.1"
 #---------------------------------------------------------------------------------
 
 cd ${dirfa}
@@ -23,21 +20,21 @@ cd ${dirfa}
 for RAM in *.fa; do
     ID=$(basename ${RAM} | cut -d '-' -f '1')
 
-amrfinder --nucleotide ${RAM} --plus --nucleotide_output ${dirout}/${ID}_nuc.fa --output ${dirout}/${ID}_gen_temp.tsv
+amrfinder --nucleotide ${RAM} \
+          -d ${dirdb} \
+          --plus \
+          --output ${dirout}/${ID}_gen_temp.tsv
 
 done
 
-#----------------------------------------------------
-# Correr AMRFinder para identificar mutaciones de RAM
-#----------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------
 
 echo -e "##############################################################################################" "\n"
-
-echo -e "\t" ===== Identificación de mutaciones de RAM en ensambles bacterianos con AMRFinderPlus ===== "\n"
-
-echo -e           "\t"               ===== Inicio: $(date) ===== "\n"
-
+echo -e  ===== Identificación de mutaciones de RAM en ensambles bacterianos con AMRFinderPlus ===== "\n"
+echo -e                          ===== Inicio: $(date) ===== "\n"
 echo -e "##############################################################################################" "\n"
+
+#-----------------------------------------------------------------------------------------------------------------
 
 for especie in  Salmonella Escherichia Campylobacter Enterobacter_cloacae Enterococcus_faecalis Enterococcus_faecium Staphylococcus_aureus; do
     genero=$(basename ${especie} | cut -d '_' -f '1')
@@ -60,7 +57,7 @@ echo -e "If control: ${genero} ${gene}"
     if [[ ${ID_org} == ${ID} ]]; then
 echo -e "If control: ${ID_org} ${ID}"
 
-amrfinder --nucleotide ${AMR} --organism Salmonella --mutation_all ${dirout}/${ID}_mut_temp.tsv
+amrfinder --nucleotide ${AMR} -d ${dirdb} --organism Salmonella --mutation_all ${dirout}/${ID}_mut_temp.tsv
 
 else
         continue
@@ -76,7 +73,7 @@ echo -e "If control: ${genero} ${gene}"
     if [[ ${ID_org} == ${ID} ]]; then
 echo -e "If control: ${ID_org} ${ID}"
 
-amrfinder --nucleotide ${AMR} --organism Escherichia --mutation_all ${dirout}/${ID}_mut_temp.tsv
+amrfinder --nucleotide ${AMR} -d ${dirdb} --organism Escherichia --mutation_all ${dirout}/${ID}_mut_temp.tsv
 
 else
         continue
@@ -92,7 +89,7 @@ echo -e "If control: ${especie} ${organism}"
     if [[ ${ID_org} == ${ID} ]]; then
 echo -e "If control: ${ID_org} ${ID}"
 
-amrfinder --nucleotide ${AMR} --organism Enterococcus_faecalis --mutation_all ${dirout}/${ID}_mut_temp.tsv
+amrfinder --nucleotide ${AMR} -d ${dirdb} --organism Enterococcus_faecalis --mutation_all ${dirout}/${ID}_mut_temp.tsv
 
 else
         continue
@@ -108,7 +105,7 @@ echo -e "If control: ${especie} ${organism}"
     if [[ ${ID_org} == ${ID} ]]; then
 echo -e "If control: ${ID_org} ${ID}"
 
-amrfinder --nucleotide ${AMR} --organism Staphylococcus_aureus --mutation_all ${dirout}/${ID}_mut_temp.tsv
+amrfinder --nucleotide ${AMR} -d ${dirdb} --organism Staphylococcus_aureus --mutation_all ${dirout}/${ID}_mut_temp.tsv
 
 #else
  #       continue
@@ -123,27 +120,9 @@ amrfinder --nucleotide ${AMR} --organism Staphylococcus_aureus --mutation_all ${
   done
 done
 
-# ---------------------------
-# Eliminar archivos sin peso
-#----------------------------
-#find /home/user/Analisis_corridas/AMRFinder/ -type f -size 0 -exec rm -f {} \;
-#if compgen -G "./*_nuc.fa" > /dev/null; then
-#mkdir -p /home/user/Analisis_corridas/AMRFinder/Nucleotide
-#mv /home/user/Analisis_corridas/AMRFinder/*nuc* /home/admcenasa/Analisis_corridas/AMRFinder/Nucleotide
-#fi
-
-if compgen -G "/home/user/Analisis_corridas/AMRFinder/*_nuc.fa" > /dev/null; then
-    mkdir -p "/home/user/Analisis_corridas/AMRFinder/Nucleotide"
-    mv ${dirout}/*_nuc.fa "/home/user/Analisis_corridas/AMRFinder/Nucleotide"
-fi
-
-# -----------------------------------------------------------------
-# Filtrar los archivos para solo obtener los genes y mutaciones RAM
-# -----------------------------------------------------------------
-
 cd ${dirout}
 
-#Genes RAM
+#
 if compgen -G "./*_gen_temp.tsv" > /dev/null; then
 	for genes in *_gen_*; do
             ID=$(basename ${genes} | cut -d '_' -f '1')
@@ -154,7 +133,7 @@ sed -i '1i Gene_symbol\tClass\tElement_type\tSequence_name\tContig_id\tStart\tSt
         done
 fi
 
-#Mutaciones RAM
+#
 if compgen -G "./*_mut_temp.tsv" > /dev/null; then
 	for mutaciones in *_mut_*; do
             ID=$(basename ${mutaciones} | cut -d '_' -f '1')
@@ -165,7 +144,7 @@ sed -i '1i Gene_symbol\tClass\tSubclass\tSequence_name\tContig_id\tElement_type\
         done
 fi
 
-#Mutaciones AMR identificadas
+#
 if compgen -G "./*_mut_filt_all.tsv" > /dev/null; then
 	for mut in *mut_filt*; do
             ID=$(basename ${mut} | cut -d '_' -f '1')
@@ -174,11 +153,8 @@ sed -i '1i Gene_symbol\tClass\tSubclass\tSequence_name\tContig_id\tElement_type\
 
 	done
 fi
-# ---------------------------------------------------------------
-# Conjuntar los archivos de genes y mutaciones en un solo archivo
-# ---------------------------------------------------------------
 
-##### Genes #####
+#
 cd ${dirout}
 
 if compgen -G "./*_gen_filt_tmp.tsv" > /dev/null; then
@@ -190,8 +166,7 @@ echo -e "\n########## ${ename} ########## \n$(cat ${gen})"
 rm ./*gen_filt*
 	fi
 
-##### Mutaciones #####
-
+#
 if compgen -G "./*_mutresist_tmp.tsv" > /dev/null; then
 	for mut in *mutresist*; do
 	    ename=$(basename ${mut} | cut -d '_' -f '1')
@@ -203,13 +178,10 @@ rm *_mut_filt*
 	fi
 
 rm ./*temp*
-#rm *gen_filt*
-#rm *mutresist_tmp*
-#rm *_mut_filt*
 
-rm ${dirkmer}/*spa
+rm ${dirkmer}/*.spa
 
-echo -e  "###############################################################"
-echo -e "\t"                    ===== Fin: $(date) =====
-echo -e  "###############################################################"
+echo -e  "###############################################################" "\n"
+echo -e                    ===== Fin: $(date) ===== "\n"
+echo -e  "###############################################################" "\n"
 
