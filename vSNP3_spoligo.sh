@@ -5,16 +5,14 @@ echo -e ========== Iniciando espoligotipificación en lecturas de M.Bovis con vS
 echo -e "\t" =============== Inicio: $(date) ===============  "\n"
 echo -e "########################################################################################"
 
-# Secuencia de referencia para colocar en ${diref}:
-#                -> Mycobacterium_bovis_AF212297: LT708304.1
-#
+#-> Mycobacterium_bovis_AF212297: LT708304.1
+
 #---------------------------------------------------------------------------------------------
-# Definir rutas de directorios de entrada y salida
-dirfq="/home/user/Analisis_corridas/Archivos_postrim/bacteria"
-dirkf="/home/user/Analisis_corridas/kmerfinder/bacteria"
-dir="/home/user/Analisis_corridas/vSNP3"
-diref="/home/user/Programas_bioinformaticos/vSNP3-3.26/dependencies/Mycobacterium_AF2122"
-dirout="/home/user/Analisis_corridas/Resultados_all_bacteria"
+dirfq="/home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria"
+dirkf="/home/admcenasa/Analisis_corridas/kmerfinder/bacteria"
+dir="/home/admcenasa/Analisis_corridas/vSNP3"
+diref="/home/admcenasa/db/vSNP3_db/Mycobacterium_AF2122"
+dirout="/home/admcenasa/Analisis_corridas/Resultados_all_bacteria"
 #----------------------------------------------------------------------------------------------
 
 cd ${dirfq}
@@ -29,9 +27,7 @@ for R1 in *_R1_*fastq.gz; do
     R2=${R1/_R1_/_R2_}
     ID_R2=$(basename ${R2} | cut -d '_' -f '1')
 
-# --------
-# Control
-# --------
+# -------------------------------------------------------------------------------------------------
 
 if [[ ${ID_org} == ${ID_R1} && ${ID_R2} ]]; then
         echo -e "If control: Reads: ${ID_R1} ${ID_R2} Ensamble: ${ID_org}"
@@ -56,12 +52,7 @@ cat ${dir}/${ID_R1}_spoligo_vsnp3/${ID_R1}_spoligo_vSNP3_tmp.tsv | tr " " "_" \
    | awk '{print $1"\t"$25"\t"$26"\t"$27"\t"$28}' > ${dir}/${ID_R1}_spoligo_vsnp3/${ID_R1}_spoligo_vSNP3.tsv
 
 mv ${dir}/${ID_R1}_spoligo_vsnp3/*_spoligo_vSNP3.tsv ${dir}/
-mv ${dir}/${ID_R1}_spoligo_vsnp3/*log* ${dir}/
-mv ${dir}/${ID_R1}_spoligo_vsnp3/*.pdf ${dir}/
 
-#cat ${dir}/${ID}_vSNP_spoligo.csv | awk -v FPAT='([^,]*|"[^"]*")' '{print $1"\t"$25"\t"$26"\t"$27"\t"$28}' > ${dir}/${ID}_vSNP_spoligo.tsv
-
-#rm ${dir}/${ID_R1}_spoligo_vsnp3/${ID_R1}_spoligo_vSNP3.tsv
 rm -R ${dir}/${ID_R1}_spoligo_vsnp3/
 
      fi
@@ -69,41 +60,24 @@ rm -R ${dir}/${ID_R1}_spoligo_vsnp3/
  done
 done
 
-if compgen -G "${dir}/*_log.txt" > /dev/null; then
-    mkdir -p "${dir}/vSNP3_log"
-    mv "${dir}"/*_log.txt "${dir}/vSNP3_log"
-	fi
-
-if compgen -G "${dir}/*_report.pdf" > /dev/null; then
-    mkdir -p "${dir}/PDF_reports"
-    mv "${dir}"/*_report.pdf "${dir}/PDF_reports"
-	fi
-
 if compgen -G "${dir}/*_spoligo_vSNP3.tsv" > /dev/null; then
     cat "${dir}"/*_spoligo_vSNP3.tsv >> "${dir}/vSNP3_Spoligo_Prediction.tsv"
     rm "${dir}"/*_spoligo_vSNP3.tsv
 	fi
 
 # -----------------------------------------------------------------
-# Mover los directorios y archivo de resultados al directorio final
-# -----------------------------------------------------------------
 
 cd ${dir}
 
 	if [[ -f ./vSNP3_Spoligo_Prediction.tsv ]]; then
-	if [[ -d ./PDF_reports ]]; then
-	if [[ -d ./vSNP3_log ]]; then
+
 mkdir -p ${dirout}/vSNP3
 
 mv ./vSNP3_Spoligo_Prediction.tsv ${dirout}/vSNP3
-mv ./PDF_reports ${dirout}/vSNP3
-mv ./vSNP3_log ${dirout}/vSNP3
 
    fi
-  fi
- fi
 
 echo -e "################################################################" "\n"
 echo -e ========== Espoligotipificación de M.Bovis terminada ========== "\n"
-echo -e "\t" =============== Fin: $(date) =============== "\n"
+echo -e  =============== Fin: $(date) =============== "\n"
 echo -e "################################################################"
