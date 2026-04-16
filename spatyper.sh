@@ -68,7 +68,6 @@ for spa in ${dirst}/*_ST_tmp.txt; do
 	done
      fi
 
- rm ${dirst}/*_ST_tmp.txt
 #-----------------------------------------------------------------
 
 cd ${dirst}
@@ -76,6 +75,8 @@ cd ${dirst}
 if [[ -f ./spaTyper_results_all.tsv ]]; then
 
 mkdir -p ${dirout}/SpaTyper
+
+rm ${dirst}/*_ST_tmp.txt
 
 mv ./spaTyper_results_all.tsv ${dirout}/SpaTyper
 
