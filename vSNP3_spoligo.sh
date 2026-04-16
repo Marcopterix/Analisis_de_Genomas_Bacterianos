@@ -8,11 +8,11 @@ echo -e "#######################################################################
 #-> Mycobacterium_bovis_AF212297: LT708304.1
 
 #---------------------------------------------------------------------------------------------
-dirfq="/home/admcenasa/Analisis_corridas/Archivos_postrim/bacteria"
-dirkf="/home/admcenasa/Analisis_corridas/kmerfinder/bacteria"
-dir="/home/admcenasa/Analisis_corridas/vSNP3"
-diref="/home/admcenasa/db/vSNP3_db/Mycobacterium_AF2122"
-dirout="/home/admcenasa/Analisis_corridas/Resultados_all_bacteria"
+dirfq="$HOME/Analisis_corridas/Archivos_postrim/bacteria"
+dirkf="$HOME/Analisis_corridas/kmerfinder/bacteria"
+dir="$HOME/Analisis_corridas/vSNP3"
+diref="$HOME/db/vSNP3_db/Mycobacterium_AF2122"
+dirout="$HOME/Analisis_corridas/Resultados_all_bacteria"
 #----------------------------------------------------------------------------------------------
 
 cd ${dirfq}
