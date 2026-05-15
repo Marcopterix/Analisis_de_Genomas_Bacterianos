@@ -28,7 +28,7 @@ dirout="/home/user/Analisis_corridas/stringMLST"
 
 cd ${dirfq}
 
-for especie in Avibacterium_paragallinarum Brucella_spp Salmonella_enterica Enterococcus_faecalis Enterococcus_faecium Mycobacteria_spp Staphylococcus_aureus; do
+for especie in Avibacterium_paragallinarum Brucella_spp Salmonella_enterica Escherichia_coli Enterococcus_faecalis Enterococcus_faecium Mycobacteria_spp Taylorella_spp Staphylococcus_aureus; do
     genero=$(basename ${especie} | cut -d '_' -f '1')
 echo -e "\t ########## Genero: ${genero} ##########"
 
@@ -112,6 +112,30 @@ cat ${dirout}/${ID}_stringMLST_tmp_${genero}.tsv >> ${dirout}/stringMLST_result_
  fi
 ;;
 
+#---------- Tipificación para E. coli Achtman ----------#
+
+                        Escherichia_coli)
+    if [[ ${ID_org} == ${ID} ]]; then
+                                     echo -e "If control: ${ID_org} ${ID}"
+    if [[ ${organism} != "Escherichia_coli" ]]; then
+
+continue
+
+        else
+     if [[ ! -f stringMLST_temp_${genero}.tsv ]]; then
+                                echo -e "\t ---------- Tipificando ${ID} ----------" 
+         stringMLST.py --predict -1 ${R1} -2 ${R2} \
+                      -P ${dirdb}/Escherichia_coli/Escherichia_coli \
+                      -o ${dirout}/${ID}_stringMLST_tmp_${genero}.tsv
+cat ${dirout}/${ID}_stringMLST_tmp_${genero}.tsv >> ${dirout}/stringMLST_result_${genero}.tsv | sort -r | uniq
+
+        else
+ continue
+   fi
+  fi
+ fi
+;;
+
 #---------- Tipificación para Enterococcus_faecalis ----------#
 
                         Enterococcus_faecalis)
@@ -177,6 +201,30 @@ cat ${dirout}/${ID}_stringMLST_tmp_${especie}.tsv >> ${dirout}/stringMLST_result
 
 else
    continue
+   fi
+  fi
+ fi
+;;
+
+#---------- Tipificación para Taylorella_spp ----------#
+
+                        Taylorella_spp)
+    if [[ ${ID_org} == ${ID} ]]; then
+                                     echo -e "If control: ${ID_org} ${ID}"
+    if [[ ${gene} != "Taylorella" ]]; then
+
+continue
+
+        else
+     if [[ ! -f stringMLST_temp_${genero}.tsv ]]; then
+                                echo -e "\t ---------- Tipificando ${ID} ----------"
+          stringMLST.py --predict -1 ${R1} -2 ${R2} \
+                        -P ${dirdb}/Taylorella_spp/Taylorella \
+                        -o ${dirout}/${ID}_stringMLST_tmp_${genero}.tsv
+cat ${dirout}/${ID}_stringMLST_tmp_${genero}.tsv >> ${dirout}/stringMLST_result_${genero}.tsv | sort -r | uniq
+
+        else
+ continue
    fi
   fi
  fi
